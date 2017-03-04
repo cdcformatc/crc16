@@ -108,17 +108,13 @@ def init_crc16_tab( ):
     
     return crc_tab16
     
-def crc16(msg):
-
+def crc16(x):
     uCRCHi = 0x00ff
     uCRCLo = 0x00ff
 
-    for i in range(0,len(x),2):
-        c1 = x[i]
-        c2 = x[i+1]
+    for i in range(0,len(x)):
+        c = int(x[i],16)
         
-        c = int(c1+c2,16)
-    
         uIndex = uCRCHi ^ c
         uCRCHi = uCRCLo ^ auCRCHi[uIndex & 0x00ff] ;
         uCRCLo = auCRCLo[uIndex & 0x00ff] ;
@@ -132,7 +128,7 @@ def update_crc_16(crc,c):
     return crc
     
 def pre_crc16(sx):
-    send_crc = 0xffff
+    send_crc = 0
     pre_crc = 0
     
     for i in range(0,len(sx),2):
@@ -143,10 +139,11 @@ def pre_crc16(sx):
         
     return (0xFF00 & (send_crc << 8)) | (0x00FF & (send_crc >> 8))
 
+import sys
 if __name__ == '__main__':
-
-    x = raw_input("Enter stuff to check\n")
-
+    
+    x = sys.argv[1:]
+    print x
     crc = crc16(x)
     print hex(crc)
     print crc
