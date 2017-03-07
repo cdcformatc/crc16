@@ -112,9 +112,12 @@ def crc16(x):
     uCRCHi = 0x00ff
     uCRCLo = 0x00ff
 
-    for i in range(0,len(x)):
-        c = int(x[i],16)
+    for i in range(0,len(x),2):
+        c1 = x[i]
+        c2 = x[i+1]
         
+        c = int(c1+c2,16)
+    
         uIndex = uCRCHi ^ c
         uCRCHi = uCRCLo ^ auCRCHi[uIndex & 0x00ff] ;
         uCRCLo = auCRCLo[uIndex & 0x00ff] ;
@@ -128,7 +131,7 @@ def update_crc_16(crc,c):
     return crc
     
 def pre_crc16(sx):
-    send_crc = 0
+    send_crc = 0xffff
     pre_crc = 0
     
     for i in range(0,len(sx),2):
@@ -141,9 +144,8 @@ def pre_crc16(sx):
 
 import sys
 if __name__ == '__main__':
+    x = ''.join(sys.argv[1:])
     
-    x = sys.argv[1:]
-    print x
     crc = crc16(x)
     print hex(crc)
     print crc
